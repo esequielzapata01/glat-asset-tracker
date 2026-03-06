@@ -1,0 +1,413 @@
+openapi: 3.1.0
+
+info:
+  version: 1.0.0
+  title: API de Seguimiento Global de Activos Logisticos
+  description: API para gestionar activos logisticos, registros de telemetria y el estado de salud de los sensores.
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo
+
+paths:
+
+  /auth/login:
+    post:
+      summary: Iniciar sesion
+      description: Autentica al usuario y devuelve un token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Token generado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Solicitud invalida
+        '401':
+          description: Credenciales invalidas
+
+  /assets:
+    get:
+      summary: Obtener todos los activos
+      description: Devuelve una lista de activos logisticos registrados
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Lista de activos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+        '401':
+          description: No autorizado
+
+    post:
+      summary: Crear un nuevo activo
+      description: Registra un nuevo activo logistico
+      security:
+        - Bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '201':
+          description: Activo creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '400':
+          description: Solicitud invalida
+        '401':
+          description: No autorizado
+
+  /assets/{id}:
+    get:
+      summary: Obtener un activo por ID
+      description: Devuelve un unico activo
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del activo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Activo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '404':
+          description: Activo no encontrado
+        '401':
+          description: No autorizado
+
+    put:
+      summary: Actualizar un activo
+      description: Actualiza la informacion de un activo existente
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del activo
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '200':
+          description: Activo actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '400':
+          description: Solicitud invalida
+        '404':
+          description: Activo no encontrado
+        '401':
+          description: No autorizado
+
+    delete:
+      summary: Eliminar un activo
+      description: Elimina un activo existente
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del activo
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Activo eliminado correctamente
+        '404':
+          description: Activo no encontrado
+        '401':
+          description: No autorizado
+
+  /assets/{id}/status:
+    get:
+      summary: Obtener el estado del activo
+      description: Devuelve el estado del activo segun la ultima telemetria registrada
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del activo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Estado del activo obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetStatus'
+        '404':
+          description: Activo o telemetria no encontrados
+        '401':
+          description: No autorizado
+
+  /telemetry:
+    get:
+      summary: Obtener todos los registros de telemetria
+      description: Devuelve todos los registros de telemetria almacenados
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Lista de registros de telemetria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryLog'
+        '401':
+          description: No autorizado
+
+    post:
+      summary: Crear datos de telemetria
+      description: Recibe y almacena un nuevo registro de telemetria
+      security:
+        - Bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTelemetryLog'
+      responses:
+        '200':
+          description: Datos de telemetria recibidos correctamente
+        '400':
+          description: Solicitud invalida
+        '404':
+          description: Activo no encontrado
+        '401':
+          description: No autorizado
+
+  /telemetry/{assetId}:
+    get:
+      summary: Obtener telemetria por activo
+      description: Devuelve los registros de telemetria asociados a un activo especifico
+      security:
+        - Bearer: []
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          description: ID del activo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de registros de telemetria del activo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryLog'
+        '404':
+          description: Activo no encontrado
+        '401':
+          description: No autorizado
+
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "admin123"
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        expiresAt:
+          type: string
+          format: date-time
+          example: "2026-03-06T21:00:00Z"
+
+    Asset:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "truck-001"
+        name:
+          type: string
+          example: "camion"
+        type:
+          type: string
+          example: "camion"
+        location:
+          type: string
+          example: "Deposito Montevideo"
+        latitude:
+          type: number
+          format: double
+          example: -34.9011
+        longitude:
+          type: number
+          format: double
+          example: -56.1645
+      required:
+        - id
+        - name
+        - type
+
+    CreateTelemetryLog:
+      type: object
+      properties:
+        assetId:
+          type: string
+          example: "truck-001"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-05T10:30:00Z"
+        temperature:
+          type: number
+          format: double
+          example: 5.4
+        batteryLevel:
+          type: number
+          format: double
+          example: 78
+        vibration:
+          type: number
+          format: double
+          example: 0.12
+      required:
+        - assetId
+        - timestamp
+        - temperature
+        - batteryLevel
+        - vibration
+
+    TelemetryLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        assetId:
+          type: string
+          example: "truck-001"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-05T10:30:00Z"
+        temperature:
+          type: number
+          format: double
+          example: 5.4
+        batteryLevel:
+          type: number
+          format: double
+          example: 78
+        vibration:
+          type: number
+          format: double
+          example: 0.12
+      required:
+        - id
+        - assetId
+        - timestamp
+        - temperature
+        - batteryLevel
+        - vibration
+
+    SensorStatus:
+      type: object
+      properties:
+        sensorName:
+          type: string
+          example: "temperature"
+        value:
+          type: number
+          format: double
+          example: 25
+        healthScore:
+          type: number
+          format: double
+          example: 0.4
+      required:
+        - sensorName
+        - value
+        - healthScore
+
+    AssetStatus:
+      type: object
+      properties:
+        assetId:
+          type: string
+          example: "truck-001"
+        status:
+          type: string
+          example: "critical"
+        healthScore:
+          type: number
+          format: double
+          example: 10
+        lastTelemetry:
+          type: string
+          format: date-time
+          example: "2026-03-05T10:30:00Z"
+        sensors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SensorStatus'
+      required:
+        - assetId
+        - status
+        - healthScore
+        - lastTelemetry
+        - sensors

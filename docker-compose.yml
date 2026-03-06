@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: glat-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Pass123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  api:
+    build:
+      context: ./backend/GLAT.Api
+      dockerfile: Dockerfile
+    container_name: glat-api
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=GLAT_DB;User Id=sa;Password=YourStrong!Pass123;TrustServerCertificate=True;
+      - LD_LIBRARY_PATH=/app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./native/libhealthscore.so:/app/libhealthscore.so:ro
+
+volumes:
+  sql_data:

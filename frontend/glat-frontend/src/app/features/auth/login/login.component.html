@@ -1,0 +1,59 @@
+<div class="min-h-screen flex items-center justify-center bg-slate-100 px-4">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+    
+    <h1 class="text-2xl font-bold text-slate-800 mb-2">GLAT Login</h1>
+    
+    <p class="text-sm text-slate-500 mb-6">
+      Inicia sesión para acceder al panel de activos
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+    
+        <div>
+    
+            <label class="block text-sm font-medium text-slate-700 mb-1">
+              Usuario
+            </label>
+    
+        <input
+          type="text"
+          formControlName="username"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-400"
+          placeholder="admin"
+        />
+        @if (form.controls.username.touched && form.controls.username.invalid) {
+          <p class="text-sm text-red-600 mt-1">El usuario es obligatorio</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          formControlName="password"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-400"
+          placeholder="••••••••"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="text-sm text-red-600 mt-1">La contraseña es obligatoria</p>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading"
+        class="w-full rounded-lg bg-slate-900 text-white py-2.5 font-medium hover:bg-slate-800 disabled:opacity-50"
+      >
+        {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+      </button>
+    </form>
+  </div>
+</div>

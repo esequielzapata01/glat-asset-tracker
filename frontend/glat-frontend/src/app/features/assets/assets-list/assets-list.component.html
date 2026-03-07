@@ -1,0 +1,69 @@
+<div class="min-h-screen bg-slate-100 p-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-800">Assets</h1>
+        <p class="text-slate-500 mt-1">Panel de activos logísticos</p>
+      </div>
+
+      <button
+        (click)="logout()"
+        class="rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+
+    @if (loading) {
+      <div class="bg-white rounded-2xl shadow p-6 text-slate-600">
+        Cargando assets...
+      </div>
+    }
+
+    @if (!loading && errorMessage) {
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4">
+        {{ errorMessage }}
+      </div>
+    }
+
+    @if (!loading && !errorMessage && assets.length === 0) {
+      <div class="bg-white rounded-2xl shadow p-6 text-slate-600">
+        No hay assets registrados
+      </div>
+    }
+
+    @if (!loading && !errorMessage && assets.length > 0) {
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-4 text-sm font-semibold text-slate-700">ID</th>
+              <th class="px-6 py-4 text-sm font-semibold text-slate-700">Nombre</th>
+              <th class="px-6 py-4 text-sm font-semibold text-slate-700">Tipo</th>
+              <th class="px-6 py-4 text-sm font-semibold text-slate-700">Ubicación</th>
+              <th class="px-6 py-4 text-sm font-semibold text-slate-700">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (asset of assets; track asset.id) {
+              <tr class="border-b border-slate-100 hover:bg-slate-50">
+                <td class="px-6 py-4 text-sm text-slate-700">{{ asset.id }}</td>
+                <td class="px-6 py-4 text-sm text-slate-700">{{ asset.name }}</td>
+                <td class="px-6 py-4 text-sm text-slate-700">{{ asset.type }}</td>
+                <td class="px-6 py-4 text-sm text-slate-700">{{ asset.location || '-' }}</td>
+                <td class="px-6 py-4">
+                  <button
+                    (click)="viewAsset(asset.id)"
+                    class="rounded-lg bg-blue-600 text-white px-3 py-2 text-sm hover:bg-blue-700"
+                  >
+                    Ver detalle
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

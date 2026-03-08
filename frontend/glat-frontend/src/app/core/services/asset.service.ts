@@ -11,6 +11,18 @@ export interface Asset {
   longitude?: number;
 }
 
+export interface AssetStatus {
+  assetId: string;
+  status: string;
+  healthScore: number;
+  lastTelemetry: string;
+  sensors: {
+    sensorName: string;
+    value: number;
+    healthScore: number;
+  }[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +38,12 @@ export class AssetService {
     return this.http.get<Asset>(`${this.apiUrl}/assets/${id}`);
   }
 
-  getAssetStatus(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/assets/${id}/status`);
+  getAssetStatus(id: string): Observable<AssetStatus> {
+    return this.http.get<AssetStatus>(`${this.apiUrl}/assets/${id}/status`);
   }
+
+   createAsset(asset: Asset): Observable<Asset> {
+    return this.http.post<Asset>(`${this.apiUrl}/assets`, asset);
+  }
+  
 }

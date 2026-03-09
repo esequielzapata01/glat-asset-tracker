@@ -88,6 +88,35 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    var maxRetries = 10;
+    var delay = TimeSpan.FromSeconds(5);
+
+    for (var attempt = 1; attempt <= maxRetries; attempt++)
+    {
+        try
+        {
+            dbContext.Database.Migrate();
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (attempt == maxRetries)
+            {
+                Console.WriteLine("No se pudieron aplicar las migraciones después de varios intentos.");
+                Console.WriteLine(ex);
+                throw;
+            }
+
+            Console.WriteLine($"Intento {attempt} de {maxRetries}: SQL Server aún no está listo. Reintentando en {delay.TotalSeconds} segundos...");
+            Thread.Sleep(delay);
+        }
+    }
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

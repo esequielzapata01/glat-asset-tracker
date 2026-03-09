@@ -25,6 +25,9 @@ export class AssetsListComponent implements OnInit {
   loading = true;
   errorMessage = '';
 
+  assetToDeleteId: string | null = null;
+  showDeleteModal = false;
+
   ngOnInit(): void {
     this.loadAssets();
   }
@@ -77,6 +80,19 @@ export class AssetsListComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  getStatusLabel(status?: string): string {
+    switch (status?.toLowerCase()) {
+      case 'healthy':
+        return 'Saludable';
+      case 'warning':
+        return 'Advertencia';
+      case 'critical':
+        return 'Crítico';
+      default:
+        return 'Sin datos';
+    }
+  }
+
   getStatusBadgeClass(status?: string): string {
     switch (status?.toLowerCase()) {
       case 'healthy':
@@ -98,6 +114,34 @@ export class AssetsListComponent implements OnInit {
   }
 
   goToCreateAsset(): void {
-  this.router.navigate(['/assets/new']);
-}
+    this.router.navigate(['/assets/new']);
+  }
+
+  openDeleteModal(id: string): void {
+    this.assetToDeleteId = id;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.assetToDeleteId = null;
+    this.showDeleteModal = false;
+  }
+
+  confirmDelete(): void {
+    if (!this.assetToDeleteId) {
+      return;
+    }
+
+    this.assetService.deleteAsset(this.assetToDeleteId).subscribe({
+      next: () => {
+        this.closeDeleteModal();
+        this.loadAssets();
+      },
+      error: () => {
+        this.errorMessage = 'No se pudo eliminar el asset';
+        this.closeDeleteModal();
+      }
+    });
+  }
+
 }

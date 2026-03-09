@@ -76,6 +76,19 @@ export class AssetDetailComponent implements OnInit {
     this.router.navigate(['/assets']);
   }
 
+  getStatusLabel(status?: string): string {
+    switch (status?.toLowerCase()) {
+      case 'healthy':
+        return 'Saludable';
+      case 'warning':
+        return 'Advertencia';
+      case 'critical':
+        return 'Crítico';
+      default:
+        return 'Sin datos';
+    }
+  }
+
   getStatusBadgeClass(status: string): string {
     switch (status?.toLowerCase()) {
       case 'healthy':
@@ -89,11 +102,18 @@ export class AssetDetailComponent implements OnInit {
     }
   }
 
+  getHealthBarClass(score?: number): string {
+    if (score == null) return 'bg-slate-300';
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 50) return 'bg-yellow-500';
+    return 'bg-red-500';
+  }
+
   goToNewTelemetry(): void {
     if (!this.asset) return;
     this.router.navigate(['/telemetry/new'], {
-        queryParams: { assetId: this.asset.id }
+      queryParams: { assetId: this.asset.id }
     });
-    }
+  }
 
 }

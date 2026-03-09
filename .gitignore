@@ -1,0 +1,96 @@
+# =========================
+# .NET / C#
+# =========================
+bin/
+obj/
+out/
+TestResults/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Publish output
+publish/
+
+# Logs
+*.log
+
+# =========================
+# Visual Studio / VS Code
+# =========================
+.vs/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Docker
+# =========================
+docker-data/
+*.pid
+
+# =========================
+# Node / Angular / Frontend
+# =========================
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# =========================
+# SQL / local database temp
+# =========================
+*.mdf
+*.ldf
+
+# =========================
+# Native / C build outputs
+# =========================
+*.o
+*.a
+*.dll
+*.exe
+*.out
+
+# Keep the Linux shared library used by the challenge
+!native/libhealthscore.so
+
+# =========================
+# Misc
+# =========================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo

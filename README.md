@@ -20,7 +20,7 @@ La solución permite:
 - registrar telemetría
 - consultar el estado de salud de un asset
 - calcular el `HealthScore` usando una librería nativa en ANSI C integrada con **P/Invoke**
-- operar el sistema desde un frontend Angular
+- operar el sistema desde un frontend Angular dockerizado
 
 ---
 
@@ -37,6 +37,7 @@ La solución permite:
 ### Frontend
 - Angular
 - Tailwind CSS
+- Nginx
 
 ### Componente nativo
 - ANSI C
@@ -57,18 +58,22 @@ Para correr el proyecto completo en una PC nueva, instalar lo siguiente:
 ### Obligatorio
 - **Git**
 - **Docker Desktop**
-- **Node.js**
-- **npm**
-- **Angular CLI**
-- **.NET 8 SDK**
 
 ### Opcional
 Solo hace falta si se quiere regenerar el cliente OpenAPI:
 - **Java**
+- **Node.js**
+- **npm**
 
 Solo hace falta si se quiere recompilar manualmente la librería nativa:
 - **WSL o Linux**
 - **GCC**
+
+Solo hace falta si se quiere ejecutar frontend o backend fuera de Docker:
+- **Node.js**
+- **npm**
+- **Angular CLI**
+- **.NET 8 SDK**
 
 ---
 
@@ -79,10 +84,6 @@ Después de instalar los prerequisitos, abrir una terminal y verificar:
 ```bash
 git --version
 docker --version
-node -v
-npm -v
-ng version
-dotnet --version
 ```
 
 Si alguno de estos comandos falla, completar la instalación antes de seguir.
@@ -91,7 +92,7 @@ Si alguno de estos comandos falla, completar la instalación antes de seguir.
 
 ## 5. Cómo obtener el proyecto
 
-## Paso 1: clonar el repositorio
+### Paso 1: clonar el repositorio
 
 Abrir una terminal y ejecutar:
 
@@ -100,7 +101,7 @@ git clone https://github.com/esequielzapata01/glat-asset-tracker.git
 cd glat-asset-tracker
 ```
 
-## Paso 2: confirmar que estás en la raíz del proyecto
+### Paso 2: confirmar que estás en la raíz del proyecto
 
 En esta carpeta deben verse, entre otros, estos archivos y carpetas:
 
@@ -111,7 +112,6 @@ En esta carpeta deben verse, entre otros, estos archivos y carpetas:
 - `native`
 
 ### Ejemplo de ruta en Windows
-La ruta puede verse, por ejemplo, así:
 
 ```text
 C:\Users\NombreUsuario\Desktop\glat-asset-tracker
@@ -128,7 +128,6 @@ glat-asset-tracker/
 ├── assets-api.yaml
 ├── docker-compose.yml
 ├── README.md
-├── README.es.md
 ├── AI_STRATEGY.md
 ├── native/
 │   ├── healthscore.c
@@ -148,6 +147,9 @@ glat-asset-tracker/
 │       └── GLAT.Api.csproj
 └── frontend/
     └── glat-frontend/
+        ├── Dockerfile
+        ├── nginx.conf
+        └── src/
 ```
 
 ---
@@ -186,12 +188,12 @@ Usar estas credenciales para autenticación JWT:
 
 ---
 
-## 9. Cómo levantar el backend
+## 9. Cómo levantar todo el ecosistema
 
 ## IMPORTANTE
 Todos los comandos de esta sección deben ejecutarse **desde la raíz del proyecto**, es decir, desde la carpeta donde está `docker-compose.yml`.
 
-## Paso 1: abrir Docker Desktop y esperar a que esté completamente iniciado
+### Paso 1: abrir Docker Desktop y esperar a que esté completamente iniciado
 
 Antes de ejecutar `docker compose up --build`, confirmar que:
 
@@ -207,7 +209,7 @@ docker version
 
 Si este comando falla, no seguir hasta resolver Docker Desktop.
 
-## Paso 2: levantar los contenedores
+### Paso 2: levantar todos los servicios
 
 Desde la raíz del proyecto, ejecutar:
 
@@ -219,61 +221,35 @@ Este comando levanta:
 
 - SQL Server
 - API ASP.NET Core
+- Frontend Angular servido por Nginx
 
-> No cerrar esta terminal mientras se quiera usar el backend.
+> No cerrar esta terminal mientras se quiera usar el sistema.
 
-## Paso 3: validar que el backend haya levantado
+### Paso 3: validar que todo haya levantado
 
-Cuando el backend esté listo, abrir en el navegador:
+Cuando los servicios estén listos, abrir en el navegador:
 
-```text
-http://localhost:8080/swagger
-```
+- Swagger: `http://localhost:8080/swagger`
+- Frontend: `http://localhost:4200`
 
-Si Swagger abre correctamente, el backend está funcionando.
+Si ambas URLs abren correctamente, el ecosistema está funcionando.
 
 ---
 
-## 10. Cómo levantar el frontend
+## 10. URLs importantes
 
-## IMPORTANTE
-El frontend se levanta en una **segunda terminal**, distinta a la del backend.
-
-## Paso 1: abrir una nueva terminal
-
-## Paso 2: ir a la carpeta del frontend
-
-Desde la raíz del proyecto, ejecutar:
-
-```bash
-cd frontend/glat-frontend
-```
-
-## Paso 3: instalar dependencias
-
-```bash
-npm install
-```
-
-## Paso 4: levantar Angular
-
-```bash
-ng serve
-```
-
-> No cerrar esta terminal mientras se quiera usar el frontend.
-
-## Paso 5: validar que el frontend haya levantado
-
-Abrir en el navegador:
-
+### Frontend
 ```text
 http://localhost:4200
 ```
 
+### Swagger
+```text
+http://localhost:8080/swagger
+```
 ---
 
-## 12. Resumen - Orden correcto de ejecución
+## 11. Orden correcto de ejecución
 
 Seguir este orden exacto:
 
@@ -284,14 +260,6 @@ Desde la raíz del proyecto:
 docker compose up --build
 ```
 
-### Terminal 2
-Desde `frontend/glat-frontend`:
-
-```bash
-npm install
-ng serve
-```
-
 ### Navegador
 Abrir:
 
@@ -300,11 +268,11 @@ Abrir:
 
 ---
 
-## 12. Validación recomendada
+## 12. Validación mínima recomendada
 
 Para confirmar que el sistema funciona, se recomienda validar este flujo completo.
 
-## Parte A: validar backend en Swagger
+### Parte A: validar backend en Swagger
 
 Abrir:
 
@@ -312,7 +280,7 @@ Abrir:
 http://localhost:8080/swagger
 ```
 
-### 1. Obtener token
+#### 1. Obtener token
 Usar `POST /auth/login` con este body:
 
 ```json
@@ -324,72 +292,15 @@ Usar `POST /auth/login` con este body:
 
 Copiar el token devuelto.
 
-### 2. Autorizar Swagger
+#### 2. Autorizar Swagger
 Hacer clic en **Authorize** y pegar:
 
 ```text
 Bearer TU_TOKEN
 ```
 
-### 3. Crear un asset
+#### 3. Crear un asset
 Usar `POST /assets` con este body de ejemplo:
-
-```json
-{
-  "id": "camion-001",
-  "name": "Camion 001",
-  "type": "Camion",
-  "location": "Montevideo",
-  "latitude": -34.9011,
-  "longitude": -56.1645
-}
-```
-
-### 4. Registrar telemetría
-Usar `POST /telemetry` con este body de ejemplo:
-
-```json
-{
-  "assetId": "camion-001",
-  "timestamp": "2026-03-06T20:00:00Z",
-  "temperature": 25,
-  "batteryLevel": 15,
-  "vibration": 0.9
-}
-```
-
-### 5. Consultar estado del asset
-Usar:
-
-```text
-GET /assets/camion-001/status
-```
-
-Si esto responde correctamente, backend, base de datos, JWT y librería nativa están funcionando.
-
----
-
-## Parte B: validar frontend
-
-Abrir:
-
-```text
-http://localhost:4200
-```
-
-### Flujo sugerido
-1. iniciar sesión con `admin / admin123`
-2. visualizar listado de assets
-3. entrar al detalle de un asset
-4. crear un asset desde la UI
-5. crear telemetría desde la UI
-6. volver al detalle y validar el `HealthScore`
-
----
-
-## 13. Payloads de ejemplo
-
-## Crear asset
 
 ```json
 {
@@ -402,15 +313,72 @@ http://localhost:4200
 }
 ```
 
-## Crear telemetría
+#### 4. Registrar telemetría
+Usar `POST /telemetry` con este body de ejemplo:
 
 ```json
 {
   "assetId": "camion-001",
   "timestamp": "2026-03-06T20:00:00Z",
-  "temperature": 25,
-  "batteryLevel": 15,
-  "vibration": 0.9
+  "temperature": 10,
+  "batteryLevel": 95,
+  "vibration": 0.1
+}
+```
+
+#### 5. Consultar estado del asset
+Usar:
+
+```text
+GET /assets/camion-001/status
+```
+
+Si esto responde correctamente, backend, base de datos, JWT y librería nativa están funcionando.
+
+---
+
+### Parte B: validar frontend
+
+Abrir:
+
+```text
+http://localhost:4200
+```
+
+#### Flujo sugerido
+1. iniciar sesión con `admin / admin123`
+2. visualizar listado de assets
+3. entrar al detalle de un asset
+4. crear un asset desde la UI
+5. crear telemetría desde la UI
+6. volver al detalle y validar el `HealthScore`
+
+---
+
+## 13. Payloads de ejemplo
+
+### Crear asset
+
+```json
+{
+  "id": "camion-001",
+  "name": "Camion 001",
+  "type": "camion",
+  "location": "Montevideo",
+  "latitude": -34.9011,
+  "longitude": -56.1645
+}
+```
+
+### Crear telemetría
+
+```json
+{
+  "assetId": "camion-001",
+  "timestamp": "2026-03-06T20:00:00Z",
+  "temperature": 10,
+  "batteryLevel": 95,
+  "vibration": 0.1
 }
 ```
 
@@ -463,7 +431,7 @@ gcc -shared -fPIC -o libhealthscore.so healthscore.c
 Luego reconstruir contenedores:
 
 ```bash
-docker compose down
+docker compose down -v
 docker compose up --build
 ```
 
@@ -480,7 +448,7 @@ assets-api.yaml
 La generación se realizó con:
 
 ```bash
-npx openapi-generator-cli generate -i ..\..\assets-api.yaml -g typescript-angular -o src\app\api-client
+npx openapi-generator-cli generate -i ..\\..\\assets-api.yaml -g typescript-angular -o src\\app\\api-client
 ```
 
 Ese cliente se integra mediante wrappers ubicados en:
@@ -499,7 +467,7 @@ Las migraciones de Entity Framework se encuentran en:
 backend/GLAT.Api/Migrations
 ```
 
-Este paso **no es necesario** para correr el proyecto normalmente con Docker Compose.
+Este paso **no es necesario** para correr el proyecto normalmente con Docker Compose, porque la API aplica migraciones automáticamente al iniciar.
 
 Si se necesitara ejecutar migraciones manualmente fuera del contenedor, desde:
 
@@ -521,12 +489,12 @@ La solución implementa:
 
 - contrato OpenAPI
 - backend en .NET
-- SQL Server en contenedor
+- SQL Server en contenedor Linux
 - autenticación JWT
 - componente nativo en ANSI C
 - P/Invoke
 - Docker Compose
-- frontend Angular con Tailwind
+- frontend dockerizado
 - cliente frontend generado desde OpenAPI
 
 ---
@@ -542,6 +510,10 @@ En la raíz del proyecto se incluyen:
 
 ## 20. Nota final
 
-La solución fue organizada para que backend y base de datos se levanten con Docker, mientras que el frontend se ejecuta localmente con Angular.
+La solución fue organizada para que **todo el ecosistema** se levante con un solo comando:
+
+```bash
+docker compose up --build
+```
 
 Para validar correctamente el proyecto, seguir **exactamente** los pasos de este README, en el orden indicado.

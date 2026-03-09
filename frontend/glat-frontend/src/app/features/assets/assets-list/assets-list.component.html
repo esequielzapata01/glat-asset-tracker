@@ -33,10 +33,38 @@
     <div class="bg-white rounded-2xl shadow p-6 text-slate-600">
       No hay assets registrados.
     </div>
-    }
+    }  
 
     @if (!loading && !errorMessage && assets.length > 0) {
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
+     
+     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-sm text-slate-500">Total de assets</p>
+        <h2 class="text-3xl font-bold text-slate-800 mt-2">{{ totalAssets }}</h2>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-sm text-slate-500">Saludables</p>
+        <h2 class="text-3xl font-bold text-green-600 mt-2">{{ healthyAssets }}</h2>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-sm text-slate-500">Advertencia</p>
+        <h2 class="text-3xl font-bold text-yellow-600 mt-2">{{ warningAssets }}</h2>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-sm text-slate-500">Críticos</p>
+        <h2 class="text-3xl font-bold text-red-600 mt-2">{{ criticalAssets }}</h2>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-sm text-slate-500">Promedio health score</p>
+        <h2 class="text-3xl font-bold text-slate-800 mt-2">{{ averageHealthScore }} / 100</h2>
+      </div>
+    </div>
+
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
       <table class="w-full text-left">
         <thead class="bg-slate-50 border-b border-slate-200">
           <tr>

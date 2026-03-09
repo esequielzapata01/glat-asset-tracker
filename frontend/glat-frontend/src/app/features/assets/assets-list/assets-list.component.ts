@@ -144,4 +144,31 @@ export class AssetsListComponent implements OnInit {
     });
   }
 
+  get totalAssets(): number {
+    return this.assets.length;
+  }
+
+  get healthyAssets(): number {
+    return this.assets.filter(a => a.assetStatus?.status?.toLowerCase() === 'healthy').length;
+  }
+
+  get warningAssets(): number {
+    return this.assets.filter(a => a.assetStatus?.status?.toLowerCase() === 'warning').length;
+  }
+
+  get criticalAssets(): number {
+    return this.assets.filter(a => a.assetStatus?.status?.toLowerCase() === 'critical').length;
+  }
+
+  get averageHealthScore(): number {
+    const withStatus = this.assets.filter(a => a.assetStatus?.healthScore != null);
+
+    if (withStatus.length === 0) {
+      return 0;
+    }
+
+    const total = withStatus.reduce((sum, a) => sum + (a.assetStatus?.healthScore ?? 0), 0);
+    return Math.round(total / withStatus.length);
+  }
+
 }

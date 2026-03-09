@@ -4,7 +4,7 @@
 
 Para esta prueba técnica utilicé inteligencia artificial como apoyo durante distintas etapas del desarrollo, sobre todo para acelerar tareas de análisis, debugging, estructura inicial y documentación.
 
-La IA no se usó como sustituto de validación técnica. Cada parte importante fue revisada y probada manualmente, tanto en Swagger como en Docker y en el frontend.
+La IA no se usó como sustituto de validación técnica. Cada requerimiento fue revisada y probado manualmente, tanto el backend como el frontend.
 
 ---
 
@@ -13,7 +13,7 @@ La IA no se usó como sustituto de validación técnica. Cada parte importante f
 Durante el desarrollo utilicé principalmente:
 
 - **ChatGPT**  
-  Para revisar ideas, resolver bloqueos, corregir errores, proponer estructuras de código, ajustar el contrato OpenAPI, apoyar la integración entre capas y redactar documentación.
+  Para revisar ideas, resolver bloqueos, corregir errores, proponer estructuras de código, ajustar el contrato OpenAPI, apoyar la integración entre capas y mejoras en la redaccion de la documentación.
 
 - **Swagger Editor / tooling de OpenAPI**  
   Para validar y revisar el archivo `assets-api.yaml`.
@@ -111,7 +111,6 @@ El resultado final fue un frontend alineado con el contrato OpenAPI, lo cual red
 La IA también fue utilizada para redactar borradores de:
 
 - `README.md`
-- `README.es.md`
 - `AI_STRATEGY.md`
 
 Después esos textos fueron revisados y ajustados manualmente para asegurar que reflejaran el estado real del proyecto.
@@ -187,7 +186,9 @@ Las validaciones más importantes fueron:
   - listado de assets
   - detalle de asset
   - creación de asset
+  - eliminación de asset
   - creación de telemetry
+  - update de telemetrys
 
 También se validó que:
 - `GET /assets/{id}/status` respondiera según la telemetría registrada

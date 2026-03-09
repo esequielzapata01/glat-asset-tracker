@@ -234,7 +234,7 @@ Si Swagger abre correctamente, el backend está funcionando.
 
 ---
 
-## 11. Cómo levantar el frontend
+## 10. Cómo levantar el frontend
 
 ## IMPORTANTE
 El frontend se levanta en una **segunda terminal**, distinta a la del backend.
@@ -273,7 +273,7 @@ http://localhost:4200
 
 ---
 
-## 12. Orden correcto de ejecución
+## 12. Resumen - Orden correcto de ejecución
 
 Seguir este orden exacto:
 
@@ -300,7 +300,7 @@ Abrir:
 
 ---
 
-## 13. Validación mínima recomendada
+## 12. Validación recomendada
 
 Para confirmar que el sistema funciona, se recomienda validar este flujo completo.
 
@@ -336,10 +336,10 @@ Usar `POST /assets` con este body de ejemplo:
 
 ```json
 {
-  "id": "truck-001",
-  "name": "Truck 001",
-  "type": "truck",
-  "location": "Montevideo Warehouse",
+  "id": "camion-001",
+  "name": "Camion 001",
+  "type": "Camion",
+  "location": "Montevideo",
   "latitude": -34.9011,
   "longitude": -56.1645
 }
@@ -350,7 +350,7 @@ Usar `POST /telemetry` con este body de ejemplo:
 
 ```json
 {
-  "assetId": "truck-001",
+  "assetId": "camion-001",
   "timestamp": "2026-03-06T20:00:00Z",
   "temperature": 25,
   "batteryLevel": 15,
@@ -362,7 +362,7 @@ Usar `POST /telemetry` con este body de ejemplo:
 Usar:
 
 ```text
-GET /assets/truck-001/status
+GET /assets/camion-001/status
 ```
 
 Si esto responde correctamente, backend, base de datos, JWT y librería nativa están funcionando.
@@ -387,16 +387,16 @@ http://localhost:4200
 
 ---
 
-## 14. Payloads de ejemplo
+## 13. Payloads de ejemplo
 
 ## Crear asset
 
 ```json
 {
-  "id": "truck-001",
-  "name": "Truck 001",
-  "type": "truck",
-  "location": "Montevideo Warehouse",
+  "id": "camion-001",
+  "name": "Camion 001",
+  "type": "camion",
+  "location": "Montevideo",
   "latitude": -34.9011,
   "longitude": -56.1645
 }
@@ -406,7 +406,7 @@ http://localhost:4200
 
 ```json
 {
-  "assetId": "truck-001",
+  "assetId": "camion-001",
   "timestamp": "2026-03-06T20:00:00Z",
   "temperature": 25,
   "batteryLevel": 15,
@@ -416,7 +416,7 @@ http://localhost:4200
 
 ---
 
-## 15. Librería nativa en ANSI C
+## 14. Librería nativa en ANSI C
 
 El cálculo de `HealthScore` se realiza en:
 
@@ -447,7 +447,7 @@ GET /assets/{id}/status
 
 ---
 
-## 16. Recompilar la librería nativa
+## 15. Recompilar la librería nativa
 
 Este paso **no es necesario** para correr el proyecto normalmente.
 
@@ -469,7 +469,7 @@ docker compose up --build
 
 ---
 
-## 17. Cliente frontend generado desde OpenAPI
+## 16. Cliente frontend generado desde OpenAPI
 
 El frontend utiliza un cliente generado automáticamente a partir de:
 
@@ -491,7 +491,7 @@ src/app/core/services
 
 ---
 
-## 18. Migraciones y base de datos
+## 17. Migraciones y base de datos
 
 Las migraciones de Entity Framework se encuentran en:
 
@@ -515,57 +515,7 @@ dotnet ef database update
 
 ---
 
-## 19. Problemas comunes
-
-## 1. Swagger no abre
-Verificar:
-- que Docker Desktop esté abierto
-- que Docker Desktop haya iniciado correctamente
-- que `docker compose up --build` se haya ejecutado desde la raíz del proyecto
-- que la terminal del backend siga abierta
-
-## 2. El login falla desde el frontend
-Verificar:
-- que el backend siga levantado
-- que la API responda en `http://localhost:8080`
-- que las credenciales sean `admin / admin123`
-
-## 3. El frontend abre pero no navega correctamente
-Verificar:
-- que Angular esté corriendo en `http://localhost:4200`
-- que exista token en `localStorage`
-- que el backend siga levantado
-
-## 4. Error relacionado a CORS
-El backend debe estar levantado y configurado para permitir el origen:
-
-```text
-http://localhost:4200
-```
-
-## 5. El backend no encuentra la librería C
-Reconstruir contenedores con:
-
-```bash
-docker compose down
-docker compose up --build
-```
-
-y verificar que exista:
-
-```text
-native/libhealthscore.so
-```
-
-## 6. El cliente OpenAPI no se puede regenerar
-Verificar:
-- que Java esté instalado
-- que `assets-api.yaml` sea válido
-- que el comando se ejecute desde `frontend/glat-frontend`
-
----
-
-## 20. Alcance actual
+## 18. Alcance actual
 
 La solución implementa:
 
@@ -581,17 +531,16 @@ La solución implementa:
 
 ---
 
-## 21. Archivos de documentación
+## 19. Archivos de documentación
 
 En la raíz del proyecto se incluyen:
 
 - `README.md`
-- `README.es.md`
 - `AI_STRATEGY.md`
 
 ---
 
-## 22. Nota final
+## 20. Nota final
 
 La solución fue organizada para que backend y base de datos se levanten con Docker, mientras que el frontend se ejecuta localmente con Angular.
 

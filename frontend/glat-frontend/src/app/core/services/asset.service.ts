@@ -1,49 +1,38 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
-export interface Asset {
-  id: string;
-  name: string;
-  type: string;
-  location?: string;
-  latitude?: number;
-  longitude?: number;
-}
+import { AssetsService as GeneratedAssetsService } from '../../api-client/api/assets.service';
+import { Asset } from '../../api-client/model/asset';
+import { AssetStatus } from '../../api-client/model/assetStatus';
 
-export interface AssetStatus {
-  assetId: string;
-  status: string;
-  healthScore: number;
-  lastTelemetry: string;
-  sensors: {
-    sensorName: string;
-    value: number;
-    healthScore: number;
-  }[];
-}
+export type { Asset, AssetStatus };
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssetService {
-  private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080';
+  private generatedAssetsService = inject(GeneratedAssetsService);
 
-  getAssets(): Observable<Asset[]> {
-    return this.http.get<Asset[]>(`${this.apiUrl}/assets`);
+  getAssets() {
+    return this.generatedAssetsService.assetsGet();
   }
 
-  getAssetById(id: string): Observable<Asset> {
-    return this.http.get<Asset>(`${this.apiUrl}/assets/${id}`);
+  getAssetById(id: string) {
+    return this.generatedAssetsService.assetsIdGet(id);
   }
 
-  getAssetStatus(id: string): Observable<AssetStatus> {
-    return this.http.get<AssetStatus>(`${this.apiUrl}/assets/${id}/status`);
+  getAssetStatus(id: string) {
+    return this.generatedAssetsService.assetsIdStatusGet(id);
   }
 
-   createAsset(asset: Asset): Observable<Asset> {
-    return this.http.post<Asset>(`${this.apiUrl}/assets`, asset);
+  createAsset(asset: Asset) {
+    return this.generatedAssetsService.assetsPost(asset);
   }
-  
+
+  updateAsset(id: string, asset: Asset) {
+    return this.generatedAssetsService.assetsIdPut(id, asset);
+  }
+
+  deleteAsset(id: string) {
+    return this.generatedAssetsService.assetsIdDelete(id);
+  }
 }

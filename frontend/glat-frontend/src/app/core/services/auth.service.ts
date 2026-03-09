@@ -1,36 +1,28 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
-interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-interface LoginResponse {
-  token: string;
-  expiresAt: string;
-}
+import { AuthService as GeneratedAuthService } from '../../api-client/api/auth.service';
+import { LoginRequest } from '../../api-client/model/loginRequest';
+import { LoginResponse } from '../../api-client/model/loginResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private http = inject(HttpClient);
+  private generatedAuthService = inject(GeneratedAuthService);
   private platformId = inject(PLATFORM_ID);
-  private apiUrl = 'http://localhost:8080';
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
   }
 
   login(payload: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, payload).pipe(
-      tap(response => {
+    return this.generatedAuthService.authLoginPost(payload).pipe(
+      tap((response: LoginResponse) => {
         if (this.isBrowser) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('tokenExpiresAt', response.expiresAt);
+          localStorage.setItem('token', response.token ?? '');
+          localStorage.setItem('tokenExpiresAt', response.expiresAt ?? '');
         }
       })
     );
@@ -45,14 +37,11 @@ export class AuthService {
 
   getToken(): string | null {
     if (!this.isBrowser) return null;
-
     return localStorage.getItem('token');
   }
 
   isAuthenticated(): boolean {
-    if (typeof window === 'undefined') {
-      return false;
-    }
+    if (!this.isBrowser) return false;
 
     const token = localStorage.getItem('token');
     const expiresAt = localStorage.getItem('tokenExpiresAt');

@@ -9,10 +9,19 @@ servers:
   - url: http://localhost:8080
     description: Servidor local de desarrollo
 
-paths:
+tags:
+  - name: Auth
+    description: Operaciones de autenticacion
+  - name: Assets
+    description: Operaciones de activos logisticos
+  - name: Telemetry
+    description: Operaciones de registros de telemetria
 
+paths:
   /auth/login:
     post:
+      tags:
+        - Auth
       summary: Iniciar sesion
       description: Autentica al usuario y devuelve un token JWT
       requestBody:
@@ -35,6 +44,8 @@ paths:
 
   /assets:
     get:
+      tags:
+        - Assets
       summary: Obtener todos los activos
       description: Devuelve una lista de activos logisticos registrados
       security:
@@ -52,6 +63,8 @@ paths:
           description: No autorizado
 
     post:
+      tags:
+        - Assets
       summary: Crear un nuevo activo
       description: Registra un nuevo activo logistico
       security:
@@ -76,6 +89,8 @@ paths:
 
   /assets/{id}:
     get:
+      tags:
+        - Assets
       summary: Obtener un activo por ID
       description: Devuelve un unico activo
       security:
@@ -100,6 +115,8 @@ paths:
           description: No autorizado
 
     put:
+      tags:
+        - Assets
       summary: Actualizar un activo
       description: Actualiza la informacion de un activo existente
       security:
@@ -132,6 +149,8 @@ paths:
           description: No autorizado
 
     delete:
+      tags:
+        - Assets
       summary: Eliminar un activo
       description: Elimina un activo existente
       security:
@@ -153,6 +172,8 @@ paths:
 
   /assets/{id}/status:
     get:
+      tags:
+        - Assets
       summary: Obtener el estado del activo
       description: Devuelve el estado del activo segun la ultima telemetria registrada
       security:
@@ -178,6 +199,8 @@ paths:
 
   /telemetry:
     get:
+      tags:
+        - Telemetry
       summary: Obtener todos los registros de telemetria
       description: Devuelve todos los registros de telemetria almacenados
       security:
@@ -195,6 +218,8 @@ paths:
           description: No autorizado
 
     post:
+      tags:
+        - Telemetry
       summary: Crear datos de telemetria
       description: Recibe y almacena un nuevo registro de telemetria
       security:
@@ -217,6 +242,8 @@ paths:
 
   /telemetry/{assetId}:
     get:
+      tags:
+        - Telemetry
       summary: Obtener telemetria por activo
       description: Devuelve los registros de telemetria asociados a un activo especifico
       security:
@@ -250,7 +277,6 @@ components:
       bearerFormat: JWT
 
   schemas:
-
     LoginRequest:
       type: object
       properties:

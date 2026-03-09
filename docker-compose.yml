@@ -23,7 +23,17 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./native/libhealthscore.so:/app/libhealthscore.so:ro
+      - ./Native/libhealthscore.so:/app/libhealthscore.so:ro
+
+  frontend:
+    build:
+      context: ./frontend/glat-frontend
+      dockerfile: Dockerfile
+    container_name: glat-frontend
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
 
 volumes:
   sql_data:
